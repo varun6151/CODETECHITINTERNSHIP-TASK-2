@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light blue background */
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #007acc;
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        textarea, select, input[type="checkbox"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005f99;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text to Speech Converter</h1>
+        <form action="/tts" method="post" id="tts-form">
+            <label for="text">Enter text:</label><br>
+            <textarea id="text" name="text" rows="4" cols="50"></textarea><br><br>
+            
+            <label for="lang">Select language:</label><br>
+            <select id="lang" name="lang">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <!-- Add more languages as needed -->
+            </select><br><br>
+            
+            <label for="slow">Slow speed:</label>
+            <input type="checkbox" id="slow" name="slow"><br><br>
+            
+            <button type="submit">Convert to Speech</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('tts-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/tts', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'output.mp3';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            });
+        });
+    </script>
+</body>
+</html>
